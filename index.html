@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>GradeTrack — Dashboard</title>
+<link rel="stylesheet" href="assets/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" aria-label="Sidebar">
+    <div class="brand"><div class="logo">GT</div><div><h1>GradeTrack</h1><div class="tiny muted">Teacher dashboard</div></div></div>
+    <nav class="nav">
+      <a href="index.html"><span class="icon">🏠</span> Dashboard</a>
+      <a href="students.html"><span class="icon">👥</span> Students</a>
+      <a href="subjects.html"><span class="icon">📚</span> Subjects</a>
+      <a href="assessments.html"><span class="icon">📝</span> Assessments</a>
+      <a href="reports.html"><span class="icon">📊</span> Reports</a>
+      <a href="settings.html"><span class="icon">⚙️</span> Settings</a>
+    </nav>
+    <div class="bottom"><a class="logout" href="#">⤓ Logout</a></div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.35-4.35" stroke="#94a3b8" stroke-width="1.6" stroke-linecap="round"/></svg><input id="searchInput" placeholder="Search for students or subjects..." /></div>
+      <div class="profile"><div style="text-align:right"><div style="font-weight:700">Sarah Johnson</div><div class="meta tiny">Teacher</div></div><img src="https://i.pravatar.cc/150?img=47" alt="profile" /></div>
+    </div>
+
+    <div class="page-title"><h2>Welcome, Sarah Johnson</h2><p class="muted">Here's an overview of your students' performance</p></div>
+
+    <section class="kpis">
+      <div class="kpi"><div class="left"><div class="muted">Total Students</div><strong id="k-total">0</strong><div class="small">+12 from last month</div></div><div style="font-size:22px;color:var(--primary)">👥</div></div>
+      <div class="kpi"><div class="left"><div class="muted">Average Grade</div><strong id="k-avg">0%</strong><div class="small">+2.5% from last month</div></div><div style="font-size:22px;color:#10b981">📈</div></div>
+      <div class="kpi"><div class="left"><div class="muted">Highest Score</div><strong id="k-high">0%</strong><div class="small" style="color:var(--muted);font-weight:600">Emma Wilson • Math</div></div><div style="font-size:22px;color:#7c3aed">🏅</div></div>
+      <div class="kpi"><div class="left"><div class="muted">Lowest Score</div><strong id="k-low">0%</strong><div class="small" style="color:var(--muted);font-weight:600">Needs attention</div></div><div style="font-size:22px;color:#f97316">⚠️</div></div>
+    </section>
+
+    <section class="grid">
+      <div>
+        <div class="card charts">
+          <div style="display:flex;justify-content:space-between;align-items:center"><div><h3 style="margin:0">Average Grades Over Time</h3><div class="muted tiny" style="margin-top:6px">Monthly class average across subjects</div></div><div class="muted tiny">Jan - Jun</div></div>
+          <div class="big" style="padding-top:10px"><canvas id="lineChart"></canvas></div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">Students</h3><div style="font-size:13px;color:var(--muted)">Roll | Name | Avg% | Grade</div></div>
+          <table aria-label="Students table"><thead><tr><th>Roll</th><th>Name</th><th>Avg %</th><th>Grade</th></tr></thead><tbody id="studentsTbody"></tbody></table>
+        </div>
+      </div>
+
+      <aside>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">Grade Distribution</h3><div class="muted tiny">Current term</div></div>
+          <div style="height:220px;margin-top:12px"><canvas id="pieChart"></canvas></div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 style="margin:0 0 10px 0">Data Snapshot</h3>
+          <div class="mini-list">
+            <div class="row"><div class="muted">Subjects</div><div id="subjectCount">0</div></div>
+            <div class="row"><div class="muted">Assessments</div><div id="assessCount">0</div></div>
+            <div class="row"><div class="muted">Marks</div><div id="marksCount">0</div></div>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="scripts/main.js"></script>
+<script>
+// Demo data + chart rendering (keeps UI identical to screenshot)
+(function(){
+  function seedDemo(){
+    const students=[
+      {id:'s1',roll:'2117',name:'Emma Wilson'},{id:'s2',roll:'2118',name:'Liam Brown'},{id:'s3',roll:'2119',name:'Olivia Davis'},
+      {id:'s4',roll:'2120',name:'Noah Miller'},{id:'s5',roll:'2121',name:'Ava Martinez'},{id:'s6',roll:'2122',name:'Sophia Lee'},
+      {id:'s7',roll:'2123',name:'Mason Clark'},{id:'s8',roll:'2124',name:'Isabella Hall'}
+    ];
+    const subjects=[{id:'sub1',code:'MATH',name:'Mathematics'},{id:'sub2',code:'PHY',name:'Physics'},{id:'sub3',code:'ENG',name:'English'}];
+    const assessments=[{id:'a1',subjectId:'sub1',name:'Quiz 1',max:20,weight:0.1},{id:'a2',subjectId:'sub1',name:'Midterm',max:100,weight:0.4},{id:'a3',subjectId:'sub1',name:'Final',max:100,weight:0.5},{id:'a4',subjectId:'sub2',name:'Midterm',max:100,weight:0.5},{id:'a5',subjectId:'sub2',name:'Final',max:100,weight:0.5},{id:'a6',subjectId:'sub3',name:'Essay',max:50,weight:0.3},{id:'a7',subjectId:'sub3',name:'Final',max:100,weight:0.7}];
+    const marks=[];
+    students.forEach((s,idx)=>assessments.forEach(a=>{
+      const base=70 + (idx % 3 === 0 ? 10 : (idx % 3 === 1 ? -5 : 0));
+      const variance = Math.floor(Math.random()*15)-5;
+      const val = Math.max(0, Math.round((base + variance) * (a.max/100)));
+      marks.push({studentId:s.id,assessmentId:a.id,value:Math.min(a.max,val)});
+    }));
+    return {students,subjects,assessments,marks};
+  }
+
+  const data = seedDemo();
+
+  function computeAverages(data){
+    const avgs={};
+    data.students.forEach(s=>{
+      const subjTotals={};
+      data.subjects.forEach(sub=>subjTotals[sub.id]={weightedSum:0,weightSum:0});
+      data.assessments.forEach(a=>{
+        const mark = data.marks.find(m=>m.studentId===s.id && m.assessmentId===a.id);
+        if(mark){ const pct = (mark.value / a.max)*100; subjTotals[a.subjectId].weightedSum += pct*(a.weight||0); subjTotals[a.subjectId].weightSum += (a.weight||0); }
+      });
+      const scores=[];
+      for(const sid in subjTotals){ const t=subjTotals[sid]; if(t.weightSum>0) scores.push(t.weightedSum / t.weightSum); }
+      const avg = scores.length ? scores.reduce((a,b)=>a+b,0)/scores.length : 0;
+      let grade='F'; if(avg>=90) grade='A'; else if(avg>=80) grade='B'; else if(avg>=70) grade='C'; else if(avg>=60) grade='D';
+      avgs[s.id] = {avg: Math.round(avg*10)/10, grade};
+    });
+    return avgs;
+  }
+
+  function refreshUI(){
+    const avgs = computeAverages(data);
+    const totals = Object.values(avgs).map(x=>x.avg);
+    document.getElementById('k-total').textContent = data.students.length;
+    document.getElementById('k-avg').textContent = totals.length ? (Math.round((totals.reduce((a,b)=>a+b,0)/totals.length)*10)/10 + '%') : '0%';
+    document.getElementById('k-high').textContent = totals.length ? Math.max(...totals) + '%' : '0%';
+    document.getElementById('k-low').textContent = totals.length ? Math.min(...totals) + '%' : '0%';
+    const tbody = document.getElementById('studentsTbody'); tbody.innerHTML='';
+    data.students.forEach(s=>{ const r = avgs[s.id]||{avg:0,grade:'F'}; const tr=document.createElement('tr'); tr.innerHTML=`<td>${s.roll}</td><td>${s.name}</td><td>${r.avg}%</td><td style="font-weight:700">${r.grade}</td>`; tbody.appendChild(tr); });
+    document.getElementById('subjectCount').textContent = data.subjects.length;
+    document.getElementById('assessCount').textContent = data.assessments.length;
+    document.getElementById('marksCount').textContent = data.marks.length;
+    updateLineChart(); updatePieChart();
+  }
+
+  let lineChart=null, pieChart=null;
+  function updateLineChart(){
+    const base = parseFloat((Math.random()*2+78).toFixed(1));
+    const months=['Jan','Feb','Mar','Apr','May','Jun'];
+    const values = months.map((m,i)=> Math.round((base + (i-2.5)*1.5 + (Math.random()*2-1))*10)/10);
+    const ctx = document.getElementById('lineChart').getContext('2d');
+    if(lineChart) lineChart.destroy();
+    lineChart = new Chart(ctx, { type:'line', data:{ labels:months, datasets:[{label:'average', data:values, fill:false, tension:0.3, pointRadius:5, borderWidth:3, borderColor:'rgba(37,99,235,0.95)', backgroundColor:'rgba(37,99,235,0.15)'}]}, options:{plugins:{legend:{display:false}}, scales:{y:{min:0,max:100,ticks:{stepSize:20}}}, responsive:true, maintainAspectRatio:false } });
+  }
+  function updatePieChart(){
+    const avgs = computeAverages(data);
+    const counts = {A:0,B:0,C:0,D:0,F:0};
+    Object.values(avgs).forEach(x=>counts[x.grade]++);
+    const ctx = document.getElementById('pieChart').getContext('2d');
+    if(pieChart) pieChart.destroy();
+    pieChart = new Chart(ctx, { type:'doughnut', data:{ labels:['A','B','C','D','F'], datasets:[{data:Object.values(counts), backgroundColor:['#16a34a','#2563eb','#f59e0b','#f97316','#ef4444']}] }, options:{plugins:{legend:{position:'right'}}, responsive:true, maintainAspectRatio:false } );
+  }
+
+  refreshUI();
+})();</script>
+</body>
+</html>

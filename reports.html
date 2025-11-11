@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>GradeTrack — Reports</title>
+<link rel="stylesheet" href="assets/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" aria-label="Sidebar">
+    <div class="brand"><div class="logo">GT</div><div><h1>GradeTrack</h1><div class="tiny muted">Teacher dashboard</div></div></div>
+    <nav class="nav">
+      <a href="index.html">🏠 Dashboard</a>
+      <a href="students.html">👥 Students</a>
+      <a href="subjects.html">📚 Subjects</a>
+      <a href="assessments.html">📝 Assessments</a>
+      <a href="reports.html">📊 Reports</a>
+      <a href="settings.html">⚙️ Settings</a>
+    </nav>
+    <div class="bottom"><a class="logout" href="#">⤓ Logout</a></div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.35-4.35" stroke="#94a3b8" stroke-width="1.6" stroke-linecap="round"/></svg><input id="searchInput" placeholder="Search for students or subjects..." /></div>
+      <div class="profile"><div style="text-align:right"><div style="font-weight:700">Sarah Johnson</div><div class="meta tiny">Teacher</div></div><img src="https://i.pravatar.cc/150?img=47" alt="profile" /></div>
+    </div>
+
+    <div class="page-title"><h2>Reports</h2><p class="muted">Manage reports information.</p></div>
+
+    <div class="card">
+      
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+  <div><button class="btn">Generate Report</button></div>
+  <div class="muted tiny">Export or view reports</div>
+</div>
+<div style="display:flex;gap:12px;flex-wrap:wrap">
+  <div class="card" style="flex:1"><h4>Class Summary</h4><p class="muted">Overview and distributions</p></div>
+  <div class="card" style="flex:1"><h4>At-risk Students</h4><p class="muted">Students below threshold</p></div>
+</div>
+
+    </div>
+
+  </main>
+</div>
+<script src="scripts/main.js"></script>
+</body>
+</html>
